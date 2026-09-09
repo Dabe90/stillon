@@ -3,11 +3,14 @@
 **Harbor Light Food Bank’s overnight benefits desk.**  
 A [Strands Agents](https://strandsagents.com/) agent that keeps households from losing SNAP, Medicaid, or LIHEAP because a recertification letter sat on the counter.
 
-Built for the [AWS Agents for Humans](https://agentsforhumans.devpost.com/) hackathon · **Good Neighbor** track.
+Built for the [AWS Agents for Humans](https://agentsforhumans.devpost.com/) hackathon · **Good Neighbor** track.  
+Public repo: [github.com/Dabe90/stillon](https://github.com/Dabe90/stillon) · Apache-2.0
 
 StillOn is not a chatbot. It works the caseload while the caseworker sleeps. In the morning they only see the households that need a human: a missing paystub, an income change, an unsigned last page, or benefits that already dropped.
 
 Deadlines and document freshness are **Python**. Judgment (which gap is worth waking someone) is the **Strands agent**. Filing is a **Strands interrupt** — the model cannot submit on its own.
+
+![StillOn architecture](docs/architecture.svg)
 
 ## Who it is for
 
@@ -52,7 +55,7 @@ STILLON_MODEL_ID=amazon.nova-lite-v1:0
 AWS_BEARER_TOKEN_BEDROCK=paste-the-key-here
 ```
 
-Then `stillon night` again. Tools and interrupts do not change.
+Then `stillon night` again. Tools and interrupts do not change. Caseworker buttons still come from Python so a messy model call cannot garble the board.
 
 ## AgentCore
 
@@ -71,6 +74,10 @@ npm install -g @aws/agentcore
 agentcore deploy
 ```
 
+## Submit
+
+Paste-ready Devpost copy is in [`docs/DEVPOST.md`](docs/DEVPOST.md). Record from [`docs/DEMO.md`](docs/DEMO.md). Publish [`docs/BUILDER.md`](docs/BUILDER.md) on [builder.aws.com](https://builder.aws.com) with the title as written (it contains **Agents for Humans**).
+
 ## Repository layout
 
 ```
@@ -78,8 +85,8 @@ stillon/           agent, tools, deadline engine, matching, night desk, UI API
 web/static/        morning board
 data/seed.json     Harbor Light caseload (frozen to 2026-09-09)
 deploy/            AgentCore entrypoint + Dockerfile
-docs/              architecture diagram
-tests/             deadline, matching, and live Strands interrupt tests
+docs/              architecture, Devpost, demo script, Builder Center draft
+tests/             deadline, matching, interrupt, and option-normalization tests
 ```
 
 ## License

@@ -1,5 +1,16 @@
 const $ = (sel) => document.querySelector(sel);
 
+let currentBoard = null;
+
+function esc(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 async function api(path, opts) {
   const res = await fetch(path, {
     headers: { "Content-Type": "application/json" },
@@ -27,7 +38,7 @@ function counts(board) {
   ]
     .map(
       ([label, n, cls]) =>
-        `<div class="count ${cls || ""}"><span>${label}</span><b>${n}</b></div>`
+        `<div class="count ${cls || ""}"><span>${esc(label)}</span><b>${esc(n)}</b></div>`
     )
     .join("");
 }
@@ -43,18 +54,27 @@ function renderNeeds(board) {
       const buttons = (item.options || [])
         .map(
           (opt) =>
-            `<button class="choice" data-hh="${item.household_id}" data-choice="${opt.id}">${opt.label}</button>`
+            `<button class="choice" data-hh="${esc(item.household_id)}" data-choice="${esc(opt.id)}">${esc(opt.label)}</button>`
         )
         .join("");
       return `<article class="card urgent">
-        <p class="kicker">${item.program} · ${item.days_until_drop} days · ${item.drop_on}</p>
-        <h3>${item.display_name}</h3>
-        <p>${item.question}</p>
-        <p class="why">${item.why_human}</p>
+        <p class="kicker">${esc(item.program)} · ${esc(item.days_until_drop)} days · ${esc(item.drop_on)}</p>
+        <h3>${esc(item.display_name)}</h3>
+        <p>${esc(item.question)}</p>
+        <p class="why">${esc(item.why_human)}</p>
         <div>${buttons}</div>
       </article>`;
     })
     .join("");
+}
+
+function packetCard(p, filed) {
+  return `<article class="card ${filed ? "filed" : ""}">
+        <p class="kicker">${esc(p.program)} · ${filed ? "filed" : "drafted"}</p>
+        <h3>${esc(p.display_name || p.household_id)}</h3>
+        <p>${filed ? "Caseworker chose to file. Packet is marked submitted." : "Packet assembled overnight. No decision required."}</p>
+        <p><a href="${esc(p.path)}" target="_blank" rel="noreferrer">Open PDF</a></p>
+      </article>`;
 }
 
 function renderReady(board) {
@@ -63,16 +83,17 @@ function renderReady(board) {
     root.innerHTML = `<p class="empty">No silent packets yet. Run last night.</p>`;
     return;
   }
-  root.innerHTML = board.ready
-    .map(
-      (p) => `<article class="card">
-        <p class="kicker">${p.program} · drafted</p>
-        <h3>${p.display_name || p.household_id}</h3>
-        <p>Packet assembled overnight. No decision required.</p>
-        <p><a href="${p.path}" target="_blank" rel="noreferrer">Open PDF</a></p>
-      </article>`
-    )
-    .join("");
+  root.innerHTML = board.ready.map((p) => packetCard(p, false)).join("");
+}
+
+function renderSubmitted(board) {
+  const root = $("#submitted");
+  const rows = board.submitted || [];
+  if (!rows.length) {
+    root.innerHTML = `<p class="empty">Nothing filed yet. Filing is a human act.</p>`;
+    return;
+  }
+  root.innerHTML = rows.map((p) => packetCard(p, true)).join("");
 }
 
 function renderTable(board) {
@@ -83,23 +104,27 @@ function renderTable(board) {
       if (row.pending) overnight = "needs you";
       else if (row.packet) overnight = row.packet.status;
       return `<tr>
-        <td>${row.display_name}</td>
-        <td>${row.program}</td>
-        <td>${row.drop_on}</td>
-        <td>${row.days_until_drop}</td>
-        <td class="band ${row.band}">${row.band.replace("_", " ")}</td>
-        <td>${overnight}</td>
+        <td>${esc(row.display_name)}</td>
+        <td>${esc(row.program)}</td>
+        <td>${esc(row.drop_on)}</td>
+        <td>${esc(row.days_until_drop)}</td>
+        <td class="band ${esc(row.band)}">${esc(row.band.replace("_", " "))}</td>
+        <td>${esc(overnight)}</td>
       </tr>`;
     })
     .join("");
 }
 
 function paint(board) {
+  currentBoard = board;
   $("#desk-date").textContent = board.desk_date;
   $("#model-name").textContent = board.model_name;
+  const run = board.last_run;
+  $("#last-run").textContent = run && run.run_id ? run.run_id : "not run";
   counts(board);
   renderNeeds(board);
   renderReady(board);
+  renderSubmitted(board);
   renderTable(board);
 }
 
@@ -109,6 +134,12 @@ async function load() {
 }
 
 $("#run-night").addEventListener("click", async () => {
+  if (currentBoard && currentBoard.last_run) {
+    const ok = window.confirm(
+      "Run last night again? This resets the caseload and spends Bedrock tokens if Nova is on."
+    );
+    if (!ok) return;
+  }
   $("#run-night").disabled = true;
   setStatus("Night desk is working the caseload…");
   try {

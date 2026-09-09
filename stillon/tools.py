@@ -8,6 +8,7 @@ from strands import tool
 
 from .clock import desk_date
 from .deadlines import active_notice
+from .hooks import normalize_options
 from .matching import match_notice
 from .packet import build_packet
 from .store import STORE
@@ -91,7 +92,7 @@ def escalate_decision(
                 "program": program,
                 "question": question,
                 "why_human": why_human,
-                "options": json.loads(options_json),
+                "options": normalize_options(options_json),
             }
         )
     STORE.apply_decision_side_effects(household_id, chosen)

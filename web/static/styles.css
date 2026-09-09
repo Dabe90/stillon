@@ -81,6 +81,8 @@ h2 { font-size: 22px; margin: 0 0 4px; }
 .card.urgent { border-color: #e3b4ad; }
 .kicker { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--stamp); margin: 0 0 6px; }
 .card h3 { margin: 0 0 8px; font-size: 20px; }
+.filed-heading { margin-top: 28px; }
+.card.filed { border-color: #b7cfc0; }
 .card p { margin: 0 0 8px; }
 .why { font-size: 14px; color: var(--muted); }
 

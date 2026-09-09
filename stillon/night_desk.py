@@ -173,6 +173,18 @@ def resume_decision(household_id: str, choice: str, note: str = "") -> dict[str,
     }
 
 
+def _named_packets(packets) -> list[dict[str, Any]]:
+    named = []
+    for p in packets:
+        dump = p.model_dump()
+        try:
+            dump["display_name"] = STORE.household(p.household_id).display_name
+        except KeyError:
+            dump["display_name"] = p.household_id
+        named.append(dump)
+    return named
+
+
 def board() -> dict[str, Any]:
     ranked = STORE.ranked()
     pending = STORE.pending()
@@ -180,16 +192,7 @@ def board() -> dict[str, Any]:
     pending_ids = {p.household_id for p in pending}
     packet_by_hh = {p.household_id: p for p in packets}
     quiet = [c for c in ranked if not _should_work(c)]
-    ready_packets = []
-    for p in packets:
-        if p.status != "drafted":
-            continue
-        dump = p.model_dump()
-        try:
-            dump["display_name"] = STORE.household(p.household_id).display_name
-        except KeyError:
-            dump["display_name"] = p.household_id
-        ready_packets.append(dump)
+    ready_packets = _named_packets([p for p in packets if p.status == "drafted"])
     return {
         "org": STORE.org(),
         "desk_date": desk_date().isoformat(),
@@ -205,7 +208,7 @@ def board() -> dict[str, Any]:
         },
         "needs_you": [p.model_dump() for p in pending],
         "ready": ready_packets,
-        "submitted": [p.model_dump() for p in packets if p.status == "submitted"],
+        "submitted": _named_packets([p for p in packets if p.status == "submitted"]),
         "caseload": [
             {
                 **c.model_dump(),

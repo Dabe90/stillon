@@ -22,8 +22,8 @@ def suggested_escalation(report: MatchReport, drop_on: str, days: int, display_n
     if any("income" in r.lower() for r in report.human_reasons):
         return {
             "question": (
-                f"{display_name} reported more income. File LIHEAP with an income-change addendum, "
-                "or hold the packet until Dana confirms the new hours are permanent?"
+                f"{display_name} reported more income. File with an income-change addendum, "
+                "or hold the packet until the household confirms the new hours are permanent?"
             ),
             "why_human": "An income change can change eligibility. The agent cannot decide that.",
             "options": [

@@ -7,6 +7,9 @@ from typing import Any
 
 from strands.hooks import BeforeToolCallEvent, HookProvider, HookRegistry
 
+from .deadlines import active_notice
+from .matching import match_notice
+from .policy import suggested_escalation
 from .store import STORE
 
 GATED = {"escalate_decision", "submit_packet"}
@@ -26,6 +29,10 @@ def normalize_options(raw: Any) -> list[dict[str, str]]:
     if isinstance(raw, dict):
         if "id" in raw and "label" in raw:
             raw = [raw]
+        elif "options" in raw:
+            return normalize_options(raw["options"])
+        elif "options_json" in raw:
+            return normalize_options(raw["options_json"])
         else:
             raw = [{"id": str(k), "label": str(v)} for k, v in raw.items()]
     if not isinstance(raw, list):
@@ -50,6 +57,57 @@ def normalize_options(raw: Any) -> list[dict[str, str]]:
             {"id": "wait_for_docs", "label": "Wait for the household"},
         ]
     return out[:4]
+
+
+def question_looks_broken(question: str) -> bool:
+    text = (question or "").strip()
+    if len(text) < 20:
+        return True
+    return text.startswith("{") or text.startswith("[")
+
+
+def options_look_broken(options: list[dict[str, str]]) -> bool:
+    if len(options) < 2:
+        return True
+    for opt in options:
+        label = str(opt.get("label") or "")
+        oid = str(opt.get("id") or "").lower()
+        if oid in {"options", "options_json"}:
+            return True
+        if any(ch in label for ch in "{[]}"):
+            return True
+        if label.strip().lower() in {"options", "option"}:
+            return True
+        if len(label) > 90:
+            return True
+    return False
+
+
+def policy_copy(household_id: str, program: str, display: str) -> dict[str, Any] | None:
+    """Buttons and fallback copy come from Python, not the model."""
+    try:
+        hh = STORE.household(household_id)
+    except KeyError:
+        return None
+    ranked = next(
+        (c for c in STORE.ranked() if c.household_id == household_id and (not program or c.program == program)),
+        None,
+    )
+    use_program = program or (ranked.program if ranked else "")
+    if not use_program:
+        return None
+    notice = active_notice(hh, use_program)
+    if notice is None:
+        return None
+    report = match_notice(hh, notice)
+    if ranked and ranked.days_until_drop < 0:
+        report.human_reasons = list(report.human_reasons) + ["Benefits already dropped."]
+    return suggested_escalation(
+        report,
+        drop_on=ranked.drop_on if ranked else notice.drop_on,
+        days=ranked.days_until_drop if ranked else 0,
+        display_name=display,
+    )
 
 
 def _parse_response(response: Any) -> dict:
@@ -96,11 +154,25 @@ class CaseworkerGate(HookProvider):
 
         options_raw = payload.get("options_json") or payload.get("options") or "[]"
         options = normalize_options(options_raw)
+        question = payload.get("question") or f"Submit the packet for {display}?"
+        why_human = payload.get("why_human") or "Filing is a caseworker act."
         if name == "submit_packet":
             options = [
                 {"id": "submit", "label": "Submit this packet"},
                 {"id": "hold", "label": "Hold — do not file yet"},
             ]
+        else:
+            suggestion = policy_copy(household_id, program or (ranked.program if ranked else ""), display)
+            if suggestion:
+                options = suggestion["options"]
+                if question_looks_broken(question):
+                    question = suggestion["question"]
+                why_human = why_human if not question_looks_broken(why_human) else suggestion["why_human"]
+            elif options_look_broken(options):
+                options = [
+                    {"id": "file_with_income_note", "label": "File what we have"},
+                    {"id": "wait_for_docs", "label": "Wait for the household"},
+                ]
 
         reason = {
             "tool": name,
@@ -109,9 +181,8 @@ class CaseworkerGate(HookProvider):
             "program": program or (ranked.program if ranked else ""),
             "drop_on": ranked.drop_on if ranked else "",
             "days_until_drop": ranked.days_until_drop if ranked else 0,
-            "question": payload.get("question")
-            or f"Submit the packet for {display}?",
-            "why_human": payload.get("why_human") or "Filing is a caseworker act.",
+            "question": question,
+            "why_human": why_human,
             "options": options,
         }
 
