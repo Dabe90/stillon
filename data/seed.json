@@ -1,0 +1,444 @@
+{
+  "organization": {
+    "name": "Harbor Light Food Bank",
+    "desk": "Benefits night desk",
+    "city": "Columbus, Ohio",
+    "caseworker": "Jordan Hale"
+  },
+  "households": [
+    {
+      "household_id": "hh-santos",
+      "display_name": "Santos household",
+      "city": "Linden",
+      "phone": "614-555-0142",
+      "language": "es",
+      "notes": "Maria works nights at a warehouse. Hard to reach before 2pm.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Maria Santos", "role": "head", "age": 34},
+        {"name": "Luis Santos", "role": "child", "age": 9},
+        {"name": "Elena Santos", "role": "child", "age": 6}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-44119",
+          "next_recert_on": "2026-09-13",
+          "last_submitted_on": "2026-03-12",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-santos-id", "doc_type": "photo_id", "label": "Ohio ID — Maria Santos", "issued_on": "2024-04-02"},
+        {"doc_id": "d-santos-pay", "doc_type": "paystub", "label": "Warehouse paystub ending 2026-07-18", "issued_on": "2026-07-18"},
+        {"doc_id": "d-santos-addr", "doc_type": "proof_of_address", "label": "Lease — 18th Ave", "issued_on": "2026-06-01"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-santos-snap",
+          "program": "SNAP",
+          "received_on": "2026-09-03",
+          "due_on": "2026-09-13",
+          "drop_on": "2026-09-13",
+          "required_documents": ["photo_id", "paystub", "proof_of_address"],
+          "summary": "SNAP recertification packet. Return by September 13 or the EBT card stops.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-okonkwo",
+      "display_name": "Okonkwo household",
+      "city": "Near East Side",
+      "phone": "614-555-0190",
+      "notes": "James prefers email. Packet is complete.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "James Okonkwo", "role": "head", "age": 41},
+        {"name": "Ada Okonkwo", "role": "spouse", "age": 38}
+      ],
+      "enrollments": [
+        {
+          "program": "MEDICAID",
+          "case_number": "MCD-88210",
+          "next_recert_on": "2026-09-20",
+          "last_submitted_on": "2025-09-18",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-ok-id", "doc_type": "photo_id", "label": "Ohio ID — James Okonkwo", "issued_on": "2025-01-09"},
+        {"doc_id": "d-ok-pay", "doc_type": "paystub", "label": "Transit paystub ending 2026-08-29", "issued_on": "2026-08-29"},
+        {"doc_id": "d-ok-addr", "doc_type": "proof_of_address", "label": "Dominion Energy bill", "issued_on": "2026-08-12"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-ok-mcd",
+          "program": "MEDICAID",
+          "received_on": "2026-08-21",
+          "due_on": "2026-09-20",
+          "drop_on": "2026-09-20",
+          "required_documents": ["photo_id", "paystub", "proof_of_address"],
+          "summary": "Medicaid renewal. Coverage ends September 20 if the packet is not in.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-whitaker",
+      "display_name": "Whitaker household",
+      "city": "Franklinton",
+      "phone": "614-555-0117",
+      "notes": "Dana picked up extra shifts in August. Flagged an income change at the pantry desk.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Dana Whitaker", "role": "head", "age": 52},
+        {"name": "Paul Whitaker", "role": "child", "age": 16}
+      ],
+      "enrollments": [
+        {
+          "program": "LIHEAP",
+          "case_number": "LIH-2201",
+          "next_recert_on": "2026-09-16",
+          "last_submitted_on": "2025-10-02",
+          "income_changed": true,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-wh-id", "doc_type": "photo_id", "label": "Ohio ID — Dana Whitaker", "issued_on": "2023-11-02"},
+        {"doc_id": "d-wh-pay", "doc_type": "paystub", "label": "August overtime stub", "issued_on": "2026-08-28"},
+        {"doc_id": "d-wh-util", "doc_type": "utility_bill", "label": "AEP past-due notice", "issued_on": "2026-08-30"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-wh-lih",
+          "program": "LIHEAP",
+          "received_on": "2026-09-01",
+          "due_on": "2026-09-16",
+          "drop_on": "2026-09-16",
+          "required_documents": ["photo_id", "paystub", "utility_bill"],
+          "summary": "Winter crisis LIHEAP recert. Miss it and heating help waits until next season.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-rahman",
+      "display_name": "Rahman household",
+      "city": "Hilliard",
+      "phone": "614-555-0166",
+      "notes": "On track. Do not ping.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Aisha Rahman", "role": "head", "age": 29},
+        {"name": "Noor Rahman", "role": "child", "age": 4}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-10982",
+          "next_recert_on": "2026-12-01",
+          "last_submitted_on": "2026-06-02",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-ra-id", "doc_type": "photo_id", "label": "Ohio ID — Aisha Rahman", "issued_on": "2025-07-19"}
+      ],
+      "notices": []
+    },
+    {
+      "household_id": "hh-chen",
+      "display_name": "Chen household",
+      "city": "Clintonville",
+      "phone": "614-555-0188",
+      "notes": "Notice arrived last night. File is thin.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Robert Chen", "role": "head", "age": 67}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-33012",
+          "next_recert_on": "2026-09-19",
+          "last_submitted_on": "2026-03-20",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-ch-id", "doc_type": "photo_id", "label": "Ohio ID — Robert Chen", "issued_on": "2022-02-02"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-ch-snap",
+          "program": "SNAP",
+          "received_on": "2026-09-08",
+          "due_on": "2026-09-19",
+          "drop_on": "2026-09-19",
+          "required_documents": ["photo_id", "paystub", "proof_of_address"],
+          "summary": "SNAP recertification. Social Security award letter can stand in for paystubs.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-powell",
+      "display_name": "Powell household",
+      "city": "South Side",
+      "phone": "614-555-0129",
+      "notes": "Denise came in, filled the form, left before signing.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Denise Powell", "role": "head", "age": 46},
+        {"name": "Maya Powell", "role": "child", "age": 12}
+      ],
+      "enrollments": [
+        {
+          "program": "MEDICAID",
+          "case_number": "MCD-4410",
+          "next_recert_on": "2026-09-14",
+          "last_submitted_on": "2025-09-10",
+          "income_changed": false,
+          "signature_on_file": false
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-po-id", "doc_type": "photo_id", "label": "Ohio ID — Denise Powell", "issued_on": "2024-09-01"},
+        {"doc_id": "d-po-pay", "doc_type": "paystub", "label": "Retail stub ending 2026-08-30", "issued_on": "2026-08-30"},
+        {"doc_id": "d-po-addr", "doc_type": "proof_of_address", "label": "CMHA rent statement", "issued_on": "2026-08-01"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-po-mcd",
+          "program": "MEDICAID",
+          "received_on": "2026-08-15",
+          "due_on": "2026-09-14",
+          "drop_on": "2026-09-14",
+          "required_documents": ["photo_id", "paystub", "proof_of_address", "signature"],
+          "summary": "Medicaid renewal. Last page must be signed.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-vega",
+      "display_name": "Vega household",
+      "city": "Westgate",
+      "phone": "614-555-0155",
+      "notes": "Everything is in the file. Draft and leave it for morning submit.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Luis Vega", "role": "head", "age": 38},
+        {"name": "Carmen Vega", "role": "spouse", "age": 36},
+        {"name": "Sofia Vega", "role": "child", "age": 8}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-7781",
+          "next_recert_on": "2026-09-12",
+          "last_submitted_on": "2026-03-11",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-ve-id", "doc_type": "photo_id", "label": "Ohio ID — Luis Vega", "issued_on": "2025-03-03"},
+        {"doc_id": "d-ve-pay", "doc_type": "paystub", "label": "Construction stub ending 2026-08-31", "issued_on": "2026-08-31"},
+        {"doc_id": "d-ve-addr", "doc_type": "proof_of_address", "label": "AEP bill August", "issued_on": "2026-08-20"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-ve-snap",
+          "program": "SNAP",
+          "received_on": "2026-09-02",
+          "due_on": "2026-09-12",
+          "drop_on": "2026-09-12",
+          "required_documents": ["photo_id", "paystub", "proof_of_address"],
+          "summary": "SNAP recertification due September 12.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-brooks",
+      "display_name": "Brooks household",
+      "city": "Groveport",
+      "phone": "614-555-0172",
+      "notes": "Window is open. No overnight work.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Keisha Brooks", "role": "head", "age": 31},
+        {"name": "Jalen Brooks", "role": "child", "age": 7}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-55190",
+          "next_recert_on": "2026-09-27",
+          "last_submitted_on": "2026-03-28",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-br-id", "doc_type": "photo_id", "label": "Ohio ID — Keisha Brooks", "issued_on": "2024-12-12"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-br-snap",
+          "program": "SNAP",
+          "received_on": "2026-09-07",
+          "due_on": "2026-09-27",
+          "drop_on": "2026-09-27",
+          "required_documents": ["photo_id", "paystub", "proof_of_address"],
+          "summary": "Early SNAP recert notice. Due September 27.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-nguyen",
+      "display_name": "Nguyen household",
+      "city": "Whitehall",
+      "phone": "614-555-0133",
+      "notes": "Need the current AEP bill. Last winter's bill is in the folder.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Thomas Nguyen", "role": "head", "age": 58}
+      ],
+      "enrollments": [
+        {
+          "program": "LIHEAP",
+          "case_number": "LIH-909",
+          "next_recert_on": "2026-09-18",
+          "last_submitted_on": "2025-10-11",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-ng-id", "doc_type": "photo_id", "label": "Ohio ID — Thomas Nguyen", "issued_on": "2021-08-08"},
+        {"doc_id": "d-ng-pay", "doc_type": "paystub", "label": "Pension letter 2026", "issued_on": "2026-08-01"},
+        {"doc_id": "d-ng-util", "doc_type": "utility_bill", "label": "AEP bill winter 2026", "issued_on": "2026-02-14"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-ng-lih",
+          "program": "LIHEAP",
+          "received_on": "2026-09-04",
+          "due_on": "2026-09-18",
+          "drop_on": "2026-09-18",
+          "required_documents": ["photo_id", "paystub", "utility_bill"],
+          "summary": "LIHEAP recert. Current utility bill required.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-fraser",
+      "display_name": "Fraser household",
+      "city": "Worthington",
+      "phone": "614-555-0104",
+      "notes": "Annual Medicaid is months away.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Ellen Fraser", "role": "head", "age": 71}
+      ],
+      "enrollments": [
+        {
+          "program": "MEDICAID",
+          "case_number": "MCD-1200",
+          "next_recert_on": "2026-11-08",
+          "last_submitted_on": "2025-11-02",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-fr-id", "doc_type": "photo_id", "label": "Ohio ID — Ellen Fraser", "issued_on": "2020-05-05"}
+      ],
+      "notices": []
+    },
+    {
+      "household_id": "hh-hale",
+      "display_name": "Hale household",
+      "city": "Milo-Grogan",
+      "phone": "614-555-0199",
+      "notes": "EBT already stopped. This is a drop, not a recert.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Marcus Hale", "role": "head", "age": 27},
+        {"name": "Baby Hale", "role": "child", "age": 1}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-0202",
+          "next_recert_on": "2026-09-08",
+          "last_submitted_on": "2026-03-01",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-ha-id", "doc_type": "photo_id", "label": "Ohio ID — Marcus Hale", "issued_on": "2025-09-01"},
+        {"doc_id": "d-ha-pay", "doc_type": "paystub", "label": "Temp agency stub", "issued_on": "2026-08-22"},
+        {"doc_id": "d-ha-addr", "doc_type": "proof_of_address", "label": "Shelter letter", "issued_on": "2026-08-15"}
+      ],
+      "notices": [
+        {
+          "notice_id": "n-ha-snap",
+          "program": "SNAP",
+          "received_on": "2026-08-28",
+          "due_on": "2026-09-08",
+          "drop_on": "2026-09-08",
+          "required_documents": ["photo_id", "paystub", "proof_of_address"],
+          "summary": "SNAP closed September 8 for no recert packet.",
+          "source": "mailroom"
+        }
+      ]
+    },
+    {
+      "household_id": "hh-desai",
+      "display_name": "Desai household",
+      "city": "Dublin",
+      "phone": "614-555-0121",
+      "notes": "Two programs, both quiet.",
+      "assigned_caseworker": "Jordan Hale",
+      "members": [
+        {"name": "Priya Desai", "role": "head", "age": 36},
+        {"name": "Arjun Desai", "role": "child", "age": 10},
+        {"name": "Leela Desai", "role": "child", "age": 3}
+      ],
+      "enrollments": [
+        {
+          "program": "SNAP",
+          "case_number": "SNAP-6601",
+          "next_recert_on": "2026-11-20",
+          "last_submitted_on": "2026-05-18",
+          "income_changed": false,
+          "signature_on_file": true
+        },
+        {
+          "program": "MEDICAID",
+          "case_number": "MCD-6601",
+          "next_recert_on": "2026-12-02",
+          "last_submitted_on": "2025-12-01",
+          "income_changed": false,
+          "signature_on_file": true
+        }
+      ],
+      "documents": [
+        {"doc_id": "d-de-id", "doc_type": "photo_id", "label": "Ohio ID — Priya Desai", "issued_on": "2026-01-04"}
+      ],
+      "notices": []
+    }
+  ]
+}
