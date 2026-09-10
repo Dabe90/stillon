@@ -10,7 +10,14 @@ from typing import Any
 
 ARN_DEFAULT = "arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK"
 SESSION_DEFAULT = "stillon-harbor-light-desk-2026-09-09"
+SWEEP_DEFAULT = "https://u5dz5vsg6k5ivvwp4j7ous3tpm0qvqkz.lambda-url.us-east-2.on.aws"
+# Same value as Render / Lambda. Lets the public host hit AgentCore even if yaml env vars did not sync.
+SECRET_DEFAULT = "de59d0fb483f88d5e5574f73bf92e3a4"
 REGION = os.environ.get("AWS_REGION", "us-east-2")
+
+
+def _on_render() -> bool:
+    return os.environ.get("RENDER", "").strip().lower() in {"true", "1"}
 
 
 def runtime_arn() -> str:
@@ -22,11 +29,17 @@ def runtime_session() -> str:
 
 
 def sweep_url() -> str:
-    return os.environ.get("STILLON_SWEEP_URL", "").strip().rstrip("/")
+    url = os.environ.get("STILLON_SWEEP_URL", "").strip().rstrip("/")
+    if url:
+        return url
+    return SWEEP_DEFAULT if _on_render() else ""
 
 
 def sweep_secret() -> str:
-    return os.environ.get("STILLON_SWEEP_SECRET", "").strip()
+    secret = os.environ.get("STILLON_SWEEP_SECRET", "").strip()
+    if secret:
+        return secret
+    return SECRET_DEFAULT if _on_render() else ""
 
 
 def remote_enabled() -> bool:
@@ -34,6 +47,8 @@ def remote_enabled() -> bool:
     if flag in {"0", "false", "no"}:
         return False
     if flag in {"1", "true", "yes"}:
+        return True
+    if _on_render():
         return True
     return bool(sweep_url() or os.environ.get("STILLON_AGENTCORE_ARN", "").strip())
 
