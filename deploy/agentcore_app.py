@@ -30,6 +30,9 @@ def invoke(payload: dict):
         STORE.reset()
         result = run_night()
         return {"ok": True, "run": result.model_dump(), "board": board()}
+    if action == "reset":
+        STORE.reset()
+        return {"ok": True, "board": board()}
     if action == "decide":
         outcome = resume_decision(
             payload["household_id"],

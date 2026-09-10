@@ -19,11 +19,25 @@ body {
   line-height: 1.45;
 }
 
-.top, .toolbar, .counts, main, .caseload-wrap, footer {
+.top, .toolbar, .counts, .proof, main, .caseload-wrap, footer {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 24px;
 }
+
+.proof {
+  background: var(--card);
+  border: 1px solid #b7cfc0;
+  border-left: 6px solid var(--sage);
+  border-radius: 18px;
+  padding: 16px 20px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  box-shadow: var(--shadow);
+}
+.proof h2 { margin: 4px 0 8px; font-size: 22px; }
+.proof p { margin: 0; color: var(--ink); }
+.proof-meta { margin-top: 8px !important; color: var(--muted) !important; font-size: 13px; }
 
 .top {
   display: flex;

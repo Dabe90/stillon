@@ -41,12 +41,16 @@ The twelve households are synthetic. The chore is real: food, coverage, and heat
 
 ## What judges should click
 
+Live: [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)
+
+Fraser is quiet on the empty board (60 days, `deadlines.py`). Last night is already on the board, or the page runs it on AgentCore without a click. Answer one **Needs you** card. Open a Ready PDF.
+
+Local:
+
 ```bash
 pip install -e ".[dev]"
 stillon serve
 ```
-
-Open http://127.0.0.1:8000 → **Run last night** → answer one **Needs you** card → open a Ready PDF.
 
 Architecture diagram: `docs/architecture.svg` (also rendered in the README).
 
@@ -99,4 +103,4 @@ I also learned that a neighbor agent is a caseload, not a personal assistant. If
 
 ### What's next
 
-The morning board is live at the Render URL. AgentCore Runtime is live in Ohio (`arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK`). Next is a real pantry: real notices, real drop dates, same rule — the model drafts, the human files.
+The morning board is live at the Render URL. Opening it already shows Fraser is quiet and, when needed, runs last night on AgentCore — no **Run last night** click required. EventBridge sweeps at 06:00 America/New_York. AgentCore Runtime: `arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK`. Next is a real pantry: real notices, real drop dates, same rule — the model drafts, the human files.

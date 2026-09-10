@@ -41,10 +41,11 @@ The first run uses a local Strands model provider (`NightDeskModel`) so you can 
 
 ## Live demo
 
-**Try it:** [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)  
-Click **Run last night**, then answer one **Needs you** card. First load on the free host can take a minute.
+**Try it:** [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)
 
-The board is FastAPI. Public hosts should set `STILLON_USE_BEDROCK=0` so judges do not need a Bedrock key. AgentCore remains `deploy/agentcore_app.py`.
+Open the board. Fraser is already quiet (60 days out, `deadlines.py`, the model never opened the file). If last night has not run, the page catches up on AgentCore without a click. Answer one **Needs you** card. First load on the free host can take a minute.
+
+The public URL proxies `board` / `night` / `decide` to the Ohio AgentCore runtime through a Lambda Function URL. EventBridge runs the overnight sweep at 06:00 America/New_York and pings `/api/health` so the free host stays awake. `STILLON_USE_BEDROCK=0` stays on Render; Nova Lite runs inside AgentCore.
 
 ## Amazon Bedrock
 
@@ -99,7 +100,7 @@ Paste-ready Devpost copy is in [`docs/DEVPOST.md`](docs/DEVPOST.md). Record from
 stillon/           agent, tools, deadline engine, matching, night desk, UI API
 web/static/        morning board
 data/seed.json     Harbor Light caseload (frozen to 2026-09-09)
-deploy/            AgentCore entrypoint + Dockerfile
+deploy/            AgentCore entrypoint, sweep Lambda, provision script
 docs/              architecture, Devpost, demo script, Builder Center draft
 tests/             deadline, matching, interrupt, and option-normalization tests
 ```

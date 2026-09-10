@@ -185,6 +185,44 @@ def _named_packets(packets) -> list[dict[str, Any]]:
     return named
 
 
+def python_proof(caseload: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Live deterministic proof. Fraser never enters the model."""
+    rows = caseload
+    if rows is None:
+        rows = [c.model_dump() for c in STORE.ranked()]
+    fraser = next((c for c in rows if c.get("household_id") == "hh-fraser"), None)
+    quiet = [
+        c for c in rows
+        if c.get("quiet_reason") or c.get("band") == UrgencyBand.QUIET.value
+    ]
+    if fraser is None:
+        return {
+            "headline": "Quiet cases skip the model",
+            "detail": "Drop dates live in deadlines.py. The LLM does not invent a due date.",
+            "household_id": None,
+            "days_until_drop": None,
+            "quiet_count": len(quiet),
+            "source": "deadlines.py",
+        }
+    detail = fraser.get("quiet_reason") or (
+        f"Next recert is {fraser.get('days_until_drop')} days out. No overnight work."
+    )
+    return {
+        "headline": f"{fraser.get('display_name')} is quiet",
+        "detail": f"{detail} Python skipped overnight. The model never opened this file.",
+        "household_id": fraser.get("household_id"),
+        "days_until_drop": fraser.get("days_until_drop"),
+        "quiet_count": len(quiet),
+        "source": "deadlines.py",
+    }
+
+
+def attach_proof(payload: dict[str, Any]) -> dict[str, Any]:
+    data = dict(payload or {})
+    data["proof"] = python_proof(data.get("caseload"))
+    return data
+
+
 def board() -> dict[str, Any]:
     ranked = STORE.ranked()
     pending = STORE.pending()
@@ -193,28 +231,31 @@ def board() -> dict[str, Any]:
     packet_by_hh = {p.household_id: p for p in packets}
     quiet = [c for c in ranked if not _should_work(c)]
     ready_packets = _named_packets([p for p in packets if p.status == "drafted"])
-    return {
-        "org": STORE.org(),
-        "desk_date": desk_date().isoformat(),
-        "model_name": model_name(),
-        "last_run": STORE.latest_run(),
-        "counts": {
-            "caseload": len(ranked),
-            "quiet": len(quiet),
-            "needs_you": len(pending),
-            "ready": len(ready_packets),
-            "submitted": sum(1 for p in packets if p.status == "submitted"),
-            "dropped": sum(1 for c in ranked if c.band is UrgencyBand.DROPPED),
-        },
-        "needs_you": [p.model_dump() for p in pending],
-        "ready": ready_packets,
-        "submitted": _named_packets([p for p in packets if p.status == "submitted"]),
-        "caseload": [
-            {
-                **c.model_dump(),
-                "pending": c.household_id in pending_ids,
-                "packet": packet_by_hh.get(c.household_id).model_dump() if c.household_id in packet_by_hh else None,
-            }
-            for c in ranked
-        ],
-    }
+    caseload = [
+        {
+            **c.model_dump(),
+            "pending": c.household_id in pending_ids,
+            "packet": packet_by_hh.get(c.household_id).model_dump() if c.household_id in packet_by_hh else None,
+        }
+        for c in ranked
+    ]
+    return attach_proof(
+        {
+            "org": STORE.org(),
+            "desk_date": desk_date().isoformat(),
+            "model_name": model_name(),
+            "last_run": STORE.latest_run(),
+            "counts": {
+                "caseload": len(ranked),
+                "quiet": len(quiet),
+                "needs_you": len(pending),
+                "ready": len(ready_packets),
+                "submitted": sum(1 for p in packets if p.status == "submitted"),
+                "dropped": sum(1 for c in ranked if c.band is UrgencyBand.DROPPED),
+            },
+            "needs_you": [p.model_dump() for p in pending],
+            "ready": ready_packets,
+            "submitted": _named_packets([p for p in packets if p.status == "submitted"]),
+            "caseload": caseload,
+        }
+    )

@@ -115,12 +115,31 @@ function renderTable(board) {
     .join("");
 }
 
+function renderProof(board) {
+  const proof = board.proof;
+  const root = $("#proof");
+  if (!proof) {
+    root.hidden = true;
+    return;
+  }
+  root.hidden = false;
+  $("#proof-headline").textContent = proof.headline;
+  $("#proof-detail").textContent = proof.detail;
+  const bits = [];
+  if (proof.days_until_drop != null) bits.push(`${proof.days_until_drop} days until drop`);
+  if (proof.source) bits.push(proof.source);
+  if (proof.quiet_count != null) bits.push(`${proof.quiet_count} quiet files`);
+  if (board.runtime_source) bits.push(board.runtime_source);
+  $("#proof-meta").textContent = bits.join(" · ");
+}
+
 function paint(board) {
   currentBoard = board;
   $("#desk-date").textContent = board.desk_date;
   $("#model-name").textContent = board.model_name;
   const run = board.last_run;
   $("#last-run").textContent = run && run.run_id ? run.run_id : "not run";
+  renderProof(board);
   counts(board);
   renderNeeds(board);
   renderReady(board);
@@ -128,9 +147,33 @@ function paint(board) {
   renderTable(board);
 }
 
+let autoNightStarted = false;
+
 async function load() {
   const board = await api("/api/board");
   paint(board);
+  const ran = board.last_run && board.last_run.run_id;
+  if (ran) {
+    setStatus(
+      `Night already ran. ${board.counts.needs_you} need you, ${board.counts.quiet} stayed quiet.`
+    );
+    return;
+  }
+  if (autoNightStarted) return;
+  autoNightStarted = true;
+  $("#run-night").disabled = true;
+  setStatus("Fraser is already quiet. Catching up last night on AgentCore…");
+  try {
+    const data = await api("/api/night", { method: "POST" });
+    paint(data.board);
+    setStatus(
+      `Night run ${data.run.run_id}: ${data.run.needs_you} need you, ${data.run.ready} packets ready, ${data.run.quiet} left asleep.`
+    );
+  } catch (err) {
+    setStatus(err.message);
+  } finally {
+    $("#run-night").disabled = false;
+  }
 }
 
 $("#run-night").addEventListener("click", async () => {

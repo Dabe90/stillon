@@ -22,8 +22,8 @@
         "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
       ],
       "lifecycleConfiguration": {
-        "idleRuntimeSessionTimeout": 1800,
-        "maxLifetime": 7200
+        "idleRuntimeSessionTimeout": 28800,
+        "maxLifetime": 28800
       },
       "envVars": [
         { "name": "STILLON_USE_BEDROCK", "value": "1" },

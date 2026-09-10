@@ -10,5 +10,15 @@ services:
         value: "2026-09-09"
       - key: STILLON_USE_BEDROCK
         value: "0"
+      - key: STILLON_USE_AGENTCORE
+        value: "1"
+      - key: STILLON_SWEEP_URL
+        value: "https://u5dz5vsg6k5ivvwp4j7ous3tpm0qvqkz.lambda-url.us-east-2.on.aws"
+      - key: STILLON_SWEEP_SECRET
+        value: "de59d0fb483f88d5e5574f73bf92e3a4"
+      - key: STILLON_AGENTCORE_ARN
+        value: "arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK"
+      - key: STILLON_RUNTIME_SESSION
+        value: "stillon-harbor-light-desk-2026-09-09"
       - key: PYTHON_VERSION
         value: "3.12.8"

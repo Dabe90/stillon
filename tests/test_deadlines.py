@@ -23,3 +23,7 @@ def test_santos_is_this_week():
     assert santos.band is UrgencyBand.THIS_WEEK
     hale = next(c for c in ranked if c.household_id == "hh-hale")
     assert hale.band is UrgencyBand.DROPPED
+    fraser = next(c for c in ranked if c.household_id == "hh-fraser")
+    assert fraser.days_until_drop == 60
+    assert fraser.band is UrgencyBand.QUIET
+    assert fraser.quiet_reason == "Next recert is 60 days out. No overnight work."
