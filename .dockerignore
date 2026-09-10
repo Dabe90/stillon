@@ -1,0 +1,13 @@
+.venv
+venv
+.env
+.git
+sessions
+data/runtime
+web/static/packets
+**/__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+*.egg-info
+docs/gallery

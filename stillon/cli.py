@@ -50,7 +50,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "serve":
         import uvicorn
 
-        uvicorn.run("stillon.app:app", host=args.host, port=args.port, reload=False)
+        port = int(os.environ.get("PORT", args.port))
+        host = args.host
+        if os.environ.get("PORT") and args.host == "127.0.0.1":
+            host = "0.0.0.0"
+        uvicorn.run("stillon.app:app", host=host, port=port, reload=False)
         return 0
 
     return 1

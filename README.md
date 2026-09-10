@@ -39,6 +39,16 @@ pytest
 
 The first run uses a local Strands model provider (`NightDeskModel`) so you can demo without AWS. It still goes through the real `strands.Agent` loop, tools, and `BeforeToolCallEvent` interrupts.
 
+## Live demo
+
+The morning board is a FastAPI app. Public hosts should set `STILLON_USE_BEDROCK=0` so judges can click **Run last night** without a Bedrock key.
+
+```bash
+stillon serve --host 0.0.0.0 --port 8000
+```
+
+`Dockerfile` and `render.yaml` in the repo root are for that board. AgentCore remains `deploy/agentcore_app.py`.
+
 ## Amazon Bedrock
 
 This account’s project region is **Ohio (`us-east-2`)**. Stay there. Do not chase N. Virginia on a Blank Slate signup.

@@ -44,9 +44,12 @@ def bedrock_api_key() -> str:
 
 
 def use_bedrock() -> bool:
-    if bedrock_api_key():
+    flag = os.environ.get("STILLON_USE_BEDROCK", "").strip().lower()
+    if flag in {"0", "false", "no"}:
+        return False
+    if flag in {"1", "true", "yes"}:
         return True
-    return os.environ.get("STILLON_USE_BEDROCK", "").strip() in {"1", "true", "yes"}
+    return bool(bedrock_api_key())
 
 
 def build_model():
