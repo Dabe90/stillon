@@ -23,8 +23,42 @@ async function api(path, opts) {
   return res.json();
 }
 
+function asBoard(data) {
+  if (!data || typeof data !== "object") return data;
+  if (data.counts) return data;
+  if (data.board && data.board.counts) return data.board;
+  return data;
+}
+
 function setStatus(text) {
   $("#status").textContent = text;
+}
+
+let busyTimer = null;
+let busyStarted = 0;
+
+function setBusy(on, copy) {
+  const overlay = $("#night-overlay");
+  overlay.hidden = !on;
+  document.body.classList.toggle("is-busy", on);
+  $("#run-night").disabled = on;
+  $("#reset").disabled = on;
+  if (copy) {
+    $("#overlay-copy").textContent = copy;
+    setStatus(copy);
+  }
+  if (busyTimer) {
+    clearInterval(busyTimer);
+    busyTimer = null;
+  }
+  if (on) {
+    busyStarted = Date.now();
+    $("#overlay-elapsed").textContent = "This usually takes about a minute.";
+    busyTimer = setInterval(() => {
+      const s = Math.round((Date.now() - busyStarted) / 1000);
+      $("#overlay-elapsed").textContent = `${s}s on AgentCore · quiet files already skipped`;
+    }, 500);
+  }
 }
 
 function counts(board) {
@@ -152,7 +186,8 @@ function paint(board) {
 let autoNightStarted = false;
 
 async function load() {
-  const board = await api("/api/board");
+  const data = await api("/api/board");
+  const board = asBoard(data);
   paint(board);
   const ran = board.last_run && board.last_run.run_id;
   if (ran) {
@@ -163,18 +198,18 @@ async function load() {
   }
   if (autoNightStarted) return;
   autoNightStarted = true;
-  $("#run-night").disabled = true;
-  setStatus("Fraser is already quiet. Catching up last night on AgentCore…");
+  setBusy(true, "Fraser is already quiet. Catching up last night on AgentCore…");
   try {
-    const data = await api("/api/night", { method: "POST" });
-    paint(data.board);
+    const night = await api("/api/night", { method: "POST" });
+    paint(asBoard(night.board || night));
+    const run = night.run || {};
     setStatus(
-      `Night run ${data.run.run_id}: ${data.run.needs_you} need you, ${data.run.ready} packets ready, ${data.run.quiet} left asleep.`
+      `Night run ${run.run_id}: ${run.needs_you} need you, ${run.ready} packets ready, ${run.quiet} left asleep.`
     );
   } catch (err) {
     setStatus(err.message);
   } finally {
-    $("#run-night").disabled = false;
+    setBusy(false);
   }
 }
 
@@ -185,23 +220,23 @@ $("#run-night").addEventListener("click", async () => {
     );
     if (!ok) return;
   }
-  $("#run-night").disabled = true;
-  setStatus("Night desk is working the caseload…");
+  setBusy(true, "Night desk is working the caseload on AgentCore…");
   try {
     const data = await api("/api/night", { method: "POST" });
-    paint(data.board);
+    paint(asBoard(data.board || data));
+    const run = data.run || {};
     setStatus(
-      `Night run ${data.run.run_id}: ${data.run.needs_you} need you, ${data.run.ready} packets ready, ${data.run.quiet} left asleep.`
+      `Night run ${run.run_id}: ${run.needs_you} need you, ${run.ready} packets ready, ${run.quiet} left asleep.`
     );
   } catch (err) {
     setStatus(err.message);
   } finally {
-    $("#run-night").disabled = false;
+    setBusy(false);
   }
 });
 
 $("#reset").addEventListener("click", async () => {
-  const board = await api("/api/reset", { method: "POST" });
+  const board = asBoard(await api("/api/reset", { method: "POST" }));
   paint(board);
   setStatus("Caseload reset to Wednesday morning, 9 September 2026.");
 });
@@ -210,16 +245,19 @@ document.body.addEventListener("click", async (event) => {
   const btn = event.target.closest("button.choice");
   if (!btn) return;
   btn.disabled = true;
-  setStatus("Resuming the paused Strands agent…");
+  setBusy(true, "Resuming the paused Strands agent…");
+  $("#overlay-elapsed").textContent = "One file. Not the whole caseload.";
   try {
     const data = await api(`/api/decide/${btn.dataset.hh}`, {
       method: "POST",
       body: JSON.stringify({ choice: btn.dataset.choice }),
     });
-    paint(data.board);
+    paint(asBoard(data.board || data));
     setStatus("Decision recorded. The agent finished the packet where it was safe to.");
   } catch (err) {
     setStatus(err.message);
+  } finally {
+    setBusy(false);
   }
 });
 
