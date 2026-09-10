@@ -36,6 +36,13 @@ body {
   box-shadow: var(--shadow);
 }
 .proof h2 { margin: 4px 0 8px; font-size: 22px; }
+.proof .ratio {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--sage);
+  margin: 4px 0 0 !important;
+}
 .proof p { margin: 0; color: var(--ink); }
 .proof-meta { margin-top: 8px !important; color: var(--muted) !important; font-size: 13px; }
 

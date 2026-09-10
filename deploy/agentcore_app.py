@@ -29,7 +29,14 @@ def invoke(payload: dict):
     if action in {"night", "run_night"}:
         STORE.reset()
         result = run_night()
-        return {"ok": True, "run": result.model_dump(), "board": board()}
+        payload_board = board()
+        try:
+            from stillon.artifacts import persist_run
+
+            persist_run(payload_board)
+        except Exception:
+            pass
+        return {"ok": True, "run": result.model_dump(), "board": payload_board}
     if action == "reset":
         STORE.reset()
         return {"ok": True, "board": board()}
@@ -50,7 +57,14 @@ def invoke(payload: dict):
             payload.get("choice", ""),
             payload.get("note", ""),
         )
-        return {"ok": True, "outcome": outcome, "board": board()}
+        payload_board = board()
+        try:
+            from stillon.artifacts import persist_decision
+
+            persist_decision(payload["household_id"], payload.get("choice", ""), payload_board)
+        except Exception:
+            pass
+        return {"ok": True, "outcome": outcome, "board": payload_board}
     return {"ok": True, "board": board()}
 
 

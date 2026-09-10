@@ -19,8 +19,10 @@ def test_fraser_is_quiet_before_any_night_run():
     assert proof["household_id"] == "hh-fraser"
     assert proof["days_until_drop"] == 60
     assert proof["source"] == "deadlines.py"
-    assert "Fraser" in proof["headline"]
-    assert "model never opened" in proof["detail"].lower()
+    assert proof["ratio"] == "5 of 13"
+    assert "never entered the model" in proof["headline"]
+    assert "Fraser" in proof["detail"]
+    assert "60 days" in proof["detail"]
 
 
 def test_fraser_stays_quiet_after_local_night():

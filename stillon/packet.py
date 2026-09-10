@@ -66,7 +66,9 @@ def build_packet(household: Household, notice: Notice, decision_note: str = "") 
     doc = SimpleDocTemplate(str(path), pagesize=letter, title=f"StillOn {notice.program} packet")
     doc.build(story)
 
-    rel = f"/static/packets/{path.name}"
+    from .artifacts import persist_packet
+
+    rel = persist_packet(path)
     return PacketRecord(
         packet_id=packet_id,
         household_id=household.household_id,

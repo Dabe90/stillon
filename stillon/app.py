@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import base64
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -10,10 +9,11 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from stillon.artifacts import list_audit, packet_bytes, persist_decision, persist_run
 from stillon.config import ROOT, load_env
 from stillon.night_desk import attach_proof, board, resume_decision, run_night
 from stillon.runtime import invoke, remote_enabled
-from stillon.store import PACKETS_DIR, STORE
+from stillon.store import STORE
 
 load_env()
 
@@ -27,19 +27,11 @@ def packet_pdf(name: str) -> Response:
     safe = Path(name).name
     if safe != name or not safe.endswith(".pdf"):
         raise HTTPException(status_code=404, detail="missing packet")
-    if remote_enabled():
-        try:
-            data = _unwrap(invoke({"action": "packet", "name": safe}))
-            raw = base64.b64decode(data.get("pdf_b64") or "")
-        except Exception as exc:
-            raise HTTPException(status_code=502, detail=f"packet fetch failed: {exc}") from exc
-        if not raw:
-            raise HTTPException(status_code=404, detail="missing packet")
-        return Response(content=raw, media_type="application/pdf")
-    path = PACKETS_DIR / safe
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="missing packet")
-    return FileResponse(path)
+    try:
+        raw = packet_bytes(safe)
+    except (FileNotFoundError, KeyError, ValueError) as exc:
+        raise HTTPException(status_code=404, detail="missing packet") from exc
+    return Response(content=raw, media_type="application/pdf")
 
 
 app.mount("/static", StaticFiles(directory=str(WEB)), name="static")
@@ -72,6 +64,10 @@ def _board_from_remote(data: dict, source: str = "agentcore") -> dict:
     inner = payload.get("board") if isinstance(payload.get("board"), dict) else payload
     painted = attach_proof(inner)
     painted["runtime_source"] = source
+    try:
+        persist_run(painted)
+    except Exception:
+        pass
     return painted
 
 
@@ -89,6 +85,15 @@ def index() -> FileResponse:
 @app.get("/api/health")
 def health() -> dict:
     return {"ok": True, "service": "stillon", "remote": remote_enabled()}
+
+
+@app.get("/api/audit")
+def api_audit() -> dict:
+    try:
+        rows = list_audit()
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return {"ok": True, "lock": "S3 Object Lock COMPLIANCE 30 days", "objects": rows}
 
 
 @app.get("/api/board")
@@ -154,7 +159,12 @@ def api_decide(household_id: str, body: DecisionBody) -> dict:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
-    return {"outcome": outcome, "board": _local_board()}
+    painted = _local_board()
+    try:
+        persist_decision(household_id, body.choice, painted)
+    except Exception:
+        pass
+    return {"outcome": outcome, "board": painted}
 
 
 @app.get("/api/household/{household_id}")

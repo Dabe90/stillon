@@ -219,7 +219,29 @@ def python_proof(caseload: list[dict[str, Any]] | None = None) -> dict[str, Any]
 
 def attach_proof(payload: dict[str, Any]) -> dict[str, Any]:
     data = dict(payload or {})
-    data["proof"] = python_proof(data.get("caseload"))
+    proof = python_proof(data.get("caseload"))
+    counts = data.get("counts") or {}
+    total = counts.get("caseload") or proof.get("quiet_count") or 0
+    quiet = counts.get("quiet")
+    if quiet is None:
+        quiet = proof.get("quiet_count") or 0
+    needs = counts.get("needs_you") or 0
+    proof["ratio"] = f"{quiet} of {total}"
+    proof["needs_ratio"] = f"{needs} of {total}"
+    proof["headline"] = f"{quiet} of {total} never entered the model"
+    fraser = proof.get("days_until_drop")
+    if fraser is not None:
+        proof["detail"] = (
+            f"Fraser is {fraser} days out. {quiet} of {total} files stayed in deadlines.py. "
+            "Nova never opened them. Needs you is a person, not a prompt."
+        )
+    data["proof"] = proof
+    data["aws"] = {
+        "runtime": "bedrock-agentcore",
+        "region": "us-east-2",
+        "object_lock": "COMPLIANCE 30d",
+        "sweep": "weekdays 07:00 America/New_York",
+    }
     return data
 
 

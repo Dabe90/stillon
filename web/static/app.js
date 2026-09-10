@@ -31,8 +31,8 @@ function counts(board) {
   const c = board.counts;
   $("#counts").innerHTML = [
     ["Caseload", c.caseload],
-    ["Quiet", c.quiet],
-    ["Needs you", c.needs_you, "needs"],
+    ["Quiet", `${c.quiet} of ${c.caseload}`, "quiet"],
+    ["Needs you", `${c.needs_you} of ${c.caseload}`, "needs"],
     ["Ready", c.ready, "ready"],
     ["Dropped", c.dropped],
   ]
@@ -123,12 +123,14 @@ function renderProof(board) {
     return;
   }
   root.hidden = false;
+  if ($("#proof-ratio")) $("#proof-ratio").textContent = proof.ratio || "";
   $("#proof-headline").textContent = proof.headline;
   $("#proof-detail").textContent = proof.detail;
   const bits = [];
   if (proof.days_until_drop != null) bits.push(`${proof.days_until_drop} days until drop`);
   if (proof.source) bits.push(proof.source);
-  if (proof.quiet_count != null) bits.push(`${proof.quiet_count} quiet files`);
+  if (board.aws && board.aws.object_lock) bits.push(board.aws.object_lock);
+  if (board.aws && board.aws.sweep) bits.push(board.aws.sweep);
   if (board.runtime_source) bits.push(board.runtime_source);
   $("#proof-meta").textContent = bits.join(" · ");
 }

@@ -74,6 +74,28 @@ def _iam(iam):
             {
                 "Effect": "Allow",
                 "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:ListBucket",
+                    "s3:PutObjectRetention",
+                ],
+                "Resource": [
+                    "arn:aws:s3:::stillon-harbor-light-750390206396",
+                    "arn:aws:s3:::stillon-harbor-light-750390206396/*",
+                ],
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:Query",
+                ],
+                "Resource": "arn:aws:dynamodb:us-east-2:750390206396:table/stillon-desk",
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
                     "logs:CreateLogGroup",
                     "logs:CreateLogStream",
                     "logs:PutLogEvents",
@@ -96,6 +118,8 @@ def _function(lam, role_arn: str, secret: str) -> str:
         "STILLON_RUNTIME_SESSION": SESSION,
         "STILLON_SWEEP_SECRET": secret,
         "STILLON_RENDER_URL": RENDER,
+        "STILLON_PACKET_BUCKET": "stillon-harbor-light-750390206396",
+        "STILLON_DESK_TABLE": "stillon-desk",
     }
     code = {"ZipFile": _zip_lambda()}
     try:
@@ -205,9 +229,16 @@ def main() -> None:
     url = _url(lam)
     if not url.endswith("/"):
         url += "/"
-    # 06:00 America/New_York in September (EDT = UTC-4)
-    _rule(events, lam, fn_arn, "stillon-morning-night", "cron(0 10 * * ? *)", {"action": "night"})
+    # 07:00 America/New_York weekdays in September (EDT = UTC-4)
+    _rule(events, lam, fn_arn, "stillon-morning-night", "cron(0 11 ? * MON-FRI *)", {"action": "night"})
     _rule(events, lam, fn_arn, "stillon-keepwarm", "rate(10 minutes)", {"ping": True})
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from provision_aws import BUCKET, TABLE, provision
+
+    surface = provision(url, secret)
+    cdn = surface["cloudfront"]
     render = ROOT / "render.yaml"
     render.write_text(
         "services:\n"
@@ -232,11 +263,17 @@ def main() -> None:
         f'        value: "{ARN}"\n'
         "      - key: STILLON_RUNTIME_SESSION\n"
         f'        value: "{SESSION}"\n'
+        "      - key: STILLON_PACKET_BUCKET\n"
+        f'        value: "{BUCKET}"\n'
+        "      - key: STILLON_DESK_TABLE\n"
+        f'        value: "{TABLE}"\n'
+        "      - key: STILLON_CDN_URL\n"
+        f'        value: "{cdn}"\n'
         "      - key: PYTHON_VERSION\n"
         '        value: "3.12.8"\n',
         encoding="utf-8",
     )
-    print(json.dumps({"function_url": url, "function_arn": fn_arn, "secret_file": str(SECRET_FILE)}, indent=2))
+    print(json.dumps({"function_url": url, "function_arn": fn_arn, **surface}, indent=2))
 
 
 if __name__ == "__main__":

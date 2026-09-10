@@ -19,7 +19,9 @@
       "protocol": "HTTP",
       "authorizerType": "AWS_IAM",
       "additionalPolicies": [
-        "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
+        "arn:aws:iam::aws:policy/AmazonBedrockFullAccess",
+        "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+        "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
       ],
       "lifecycleConfiguration": {
         "idleRuntimeSessionTimeout": 28800,
@@ -31,7 +33,9 @@
         { "name": "STILLON_MODEL_ID", "value": "amazon.nova-lite-v1:0" },
         { "name": "AWS_REGION", "value": "us-east-2" },
         { "name": "PYTHONUNBUFFERED", "value": "1" },
-        { "name": "STILLON_RUNTIME_DIR", "value": "/tmp/stillon" }
+        { "name": "STILLON_RUNTIME_DIR", "value": "/tmp/stillon" },
+        { "name": "STILLON_PACKET_BUCKET", "value": "stillon-harbor-light-750390206396" },
+        { "name": "STILLON_DESK_TABLE", "value": "stillon-desk" }
       ]
     }
   ],
