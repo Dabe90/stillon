@@ -17,6 +17,8 @@ Harbor Light’s overnight benefits desk. A Strands agent works the SNAP / Medic
 - Strands Agents SDK (`Agent`, tools, `BeforeToolCallEvent` interrupts, file session resume)
 - Amazon Bedrock (Amazon Nova Lite, `us-east-2`)
 - Amazon Bedrock AgentCore Runtime (`deploy/agentcore_app.py`)
+- Amazon CloudFront, Lambda Function URL, EventBridge (weekday 07:00 America/New_York)
+- Amazon DynamoDB (`stillon-desk`) and S3 Object Lock (COMPLIANCE, 30 days)
 - Python 3.11+, FastAPI, ReportLab
 
 ## Text description (paste into Devpost)
@@ -41,9 +43,9 @@ The twelve households are synthetic. The chore is real: food, coverage, and heat
 
 ## What judges should click
 
-Live: [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)
+Live (CloudFront, does not sleep): [https://dlppzaq6jj5u5.cloudfront.net](https://dlppzaq6jj5u5.cloudfront.net)
 
-Fraser is quiet on the empty board (60 days, `deadlines.py`). Last night is already on the board, or the page runs it on AgentCore without a click. Answer one **Needs you** card. Open a Ready PDF.
+**5 of 13 never entered the model.** Fraser is quiet (60 days, `deadlines.py`). Last night is on the board, or the page runs it on AgentCore without a click. Answer one **Needs you** card. Open a Ready PDF.
 
 Local:
 
@@ -103,4 +105,4 @@ I also learned that a neighbor agent is a caseload, not a personal assistant. If
 
 ### What's next
 
-The morning board is live at the Render URL. Opening it already shows Fraser is quiet and, when needed, runs last night on AgentCore — no **Run last night** click required. EventBridge sweeps at 06:00 America/New_York. AgentCore Runtime: `arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK`. Next is a real pantry: real notices, real drop dates, same rule — the model drafts, the human files.
+The morning board is always on at CloudFront (`https://dlppzaq6jj5u5.cloudfront.net`). **5 of 13 never entered the model.** Last night runs on AgentCore; EventBridge sweeps weekdays at 07:00 America/New_York. Receipts sit in DynamoDB and S3 Object Lock (COMPLIANCE, 30 days). AgentCore Runtime: `arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK`. Next is a real pantry: real notices, real drop dates, same rule — the model drafts, the human files.

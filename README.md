@@ -41,11 +41,12 @@ The first run uses a local Strands model provider (`NightDeskModel`) so you can 
 
 ## Live demo
 
-**Try it:** [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)
+**Always on:** [https://dlppzaq6jj5u5.cloudfront.net](https://dlppzaq6jj5u5.cloudfront.net)  
+Render origin: [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)
 
-Open the board. Fraser is already quiet (60 days out, `deadlines.py`, the model never opened the file). If last night has not run, the page catches up on AgentCore without a click. Answer one **Needs you** card. First load on the free host can take a minute.
+Open the board. **5 of 13 never entered the model** — Fraser is 60 days out (`deadlines.py`). Last night already ran on AgentCore, or the page catches up without a click. Answer one **Needs you** card. Open a Ready PDF.
 
-The public URL proxies `board` / `night` / `decide` to the Ohio AgentCore runtime through a Lambda Function URL. EventBridge runs the overnight sweep at 06:00 America/New_York and pings `/api/health` so the free host stays awake. `STILLON_USE_BEDROCK=0` stays on Render; Nova Lite runs inside AgentCore.
+CloudFront serves the desk so it does not sleep. `/api/*` goes to a Lambda Function URL in Ohio, then Bedrock AgentCore. EventBridge sweeps weekdays at **07:00 America/New_York**. Night receipts land in DynamoDB (`stillon-desk`) and S3 Object Lock (**COMPLIANCE, 30 days**) on `stillon-harbor-light-750390206396`. Nova Lite runs inside AgentCore; Render keeps `STILLON_USE_BEDROCK=0`.
 
 ## Amazon Bedrock
 

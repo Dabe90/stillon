@@ -20,5 +20,11 @@ services:
         value: "arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK"
       - key: STILLON_RUNTIME_SESSION
         value: "stillon-harbor-light-desk-2026-09-09"
+      - key: STILLON_PACKET_BUCKET
+        value: "stillon-harbor-light-750390206396"
+      - key: STILLON_DESK_TABLE
+        value: "stillon-desk"
+      - key: STILLON_CDN_URL
+        value: "https://dlppzaq6jj5u5.cloudfront.net"
       - key: PYTHON_VERSION
         value: "3.12.8"
