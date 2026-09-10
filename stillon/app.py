@@ -71,8 +71,10 @@ def api_board() -> dict:
     if remote_enabled():
         try:
             return _board_from_remote(invoke({"action": "board"}))
-        except Exception:
-            return _local_board("local-fallback")
+        except Exception as exc:
+            painted = _local_board("local-fallback")
+            painted["runtime_error"] = str(exc)[:240]
+            return painted
     return _local_board()
 
 

@@ -10,7 +10,7 @@ from typing import Any
 
 ARN_DEFAULT = "arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK"
 SESSION_DEFAULT = "stillon-harbor-light-desk-2026-09-09"
-SWEEP_DEFAULT = "https://u5dz5vsg6k5ivvwp4j7ous3tpm0qvqkz.lambda-url.us-east-2.on.aws"
+SWEEP_DEFAULT = "https://u5dz5vsg6k5ivvwp4j7ous3tpm0qvqkz.lambda-url.us-east-2.on.aws/"
 # Same value as Render / Lambda. Lets the public host hit AgentCore even if yaml env vars did not sync.
 SECRET_DEFAULT = "de59d0fb483f88d5e5574f73bf92e3a4"
 REGION = os.environ.get("AWS_REGION", "us-east-2")
@@ -29,10 +29,11 @@ def runtime_session() -> str:
 
 
 def sweep_url() -> str:
-    url = os.environ.get("STILLON_SWEEP_URL", "").strip().rstrip("/")
-    if url:
-        return url
-    return SWEEP_DEFAULT if _on_render() else ""
+    url = os.environ.get("STILLON_SWEEP_URL", "").strip()
+    if not url and _on_render():
+        url = SWEEP_DEFAULT
+    url = url.rstrip("/")
+    return f"{url}/" if url else ""
 
 
 def sweep_secret() -> str:

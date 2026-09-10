@@ -198,7 +198,9 @@ def main() -> None:
     events = boto3.client("events", region_name=REGION)
     role_arn = _iam(iam)
     fn_arn = _function(lam, role_arn, secret)
-    url = _url(lam).rstrip("/")
+    url = _url(lam)
+    if not url.endswith("/"):
+        url += "/"
     # 06:00 America/New_York in September (EDT = UTC-4)
     _rule(events, lam, fn_arn, "stillon-morning-night", "cron(0 10 * * ? *)", {"action": "night"})
     _rule(events, lam, fn_arn, "stillon-keepwarm", "rate(10 minutes)", {"ping": True})
