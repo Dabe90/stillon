@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
 from strands import Agent
 from strands.session.file_session_manager import FileSessionManager
 
-from .config import load_env
+from .config import ROOT, load_env
 from .demo_model import NightDeskModel
 from .hooks import CaseworkerGate
 from .tools import (
@@ -34,7 +33,7 @@ Rules:
 - Never claim you filed with the state. This desk drafts packets and waits.
 """
 
-SESSION_DIR = Path(__file__).resolve().parent.parent / "sessions"
+SESSION_DIR = ROOT / "sessions"
 
 load_env()
 

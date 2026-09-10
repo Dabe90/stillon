@@ -2,20 +2,18 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from stillon.config import load_env
+from stillon.config import ROOT, load_env
 from stillon.night_desk import board, resume_decision, run_night
 from stillon.store import STORE
 
 load_env()
 
-WEB = Path(__file__).resolve().parent.parent / "web" / "static"
+WEB = ROOT / "web" / "static"
 
 app = FastAPI(title="StillOn", version="0.1.0")
 app.mount("/static", StaticFiles(directory=str(WEB)), name="static")

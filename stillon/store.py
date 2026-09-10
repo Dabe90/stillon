@@ -5,14 +5,13 @@ from __future__ import annotations
 import json
 import shutil
 from datetime import datetime, timezone
-from pathlib import Path
 from threading import Lock
 
 from .clock import desk_date
+from .config import ROOT
 from .deadlines import rank_households
 from .models import Household, PacketRecord, PendingDecision, RankedCase
 
-ROOT = Path(__file__).resolve().parent.parent
 SEED_PATH = ROOT / "data" / "seed.json"
 RUNTIME_DIR = ROOT / "data" / "runtime"
 RUNTIME_PATH = RUNTIME_DIR / "caseload.json"
