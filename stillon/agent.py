@@ -7,7 +7,7 @@ import os
 from strands import Agent
 from strands.session.file_session_manager import FileSessionManager
 
-from .config import ROOT, load_env
+from .config import RUNTIME, load_env
 from .demo_model import NightDeskModel
 from .hooks import CaseworkerGate
 from .tools import (
@@ -33,7 +33,7 @@ Rules:
 - Never claim you filed with the state. This desk drafts packets and waits.
 """
 
-SESSION_DIR = ROOT / "sessions"
+SESSION_DIR = RUNTIME / "sessions"
 
 load_env()
 
@@ -60,8 +60,12 @@ def build_model():
 
         region = os.environ.get("AWS_REGION", "us-east-2")
         model_id = os.environ.get("STILLON_MODEL_ID", "amazon.nova-lite-v1:0")
-        key = bedrock_api_key() or None
-        return BedrockModel(model_id=model_id, region_name=region, api_key=key)
+        on_runtime = bool(os.environ.get("STILLON_RUNTIME_DIR", "").strip())
+        key = None if on_runtime else (bedrock_api_key() or None)
+        kwargs = {"model_id": model_id, "region_name": region}
+        if key:
+            kwargs["api_key"] = key
+        return BedrockModel(**kwargs)
     return NightDeskModel()
 
 

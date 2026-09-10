@@ -1,0 +1,17 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "StillOn": {
+            "runtimeId": "StillOn_StillOn-C6Gf1qBQlK",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK",
+            "roleArn": "arn:aws:iam::750390206396:role/AgentCore-StillOn-default-ApplicationAgentStillOnRu-nIV0H5J9Y5y1"
+          }
+        },
+        "stackName": "AgentCore-StillOn-default",
+        "deployHash": "76ea66fda1592ada"
+      }
+    }
+  }
+}

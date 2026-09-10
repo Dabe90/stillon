@@ -8,14 +8,14 @@ from datetime import datetime, timezone
 from threading import Lock
 
 from .clock import desk_date
-from .config import ROOT
+from .config import ROOT, RUNTIME
 from .deadlines import rank_households
 from .models import Household, PacketRecord, PendingDecision, RankedCase
 
 SEED_PATH = ROOT / "data" / "seed.json"
-RUNTIME_DIR = ROOT / "data" / "runtime"
+RUNTIME_DIR = RUNTIME / "data" / "runtime"
 RUNTIME_PATH = RUNTIME_DIR / "caseload.json"
-PACKETS_DIR = ROOT / "web" / "static" / "packets"
+PACKETS_DIR = RUNTIME / "web" / "static" / "packets"
 
 
 class CaseloadStore:

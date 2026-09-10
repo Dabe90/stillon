@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" role="img" aria-label="StillOn architecture">
   <rect width="980" height="560" fill="#f4efe4"/>
-  <text x="40" y="48" font-family="Georgia, serif" font-size="28" fill="#241c16">StillOn · Harbor Light night desk</text>
-  <text x="40" y="76" font-family="Georgia, serif" font-size="14" fill="#6d6258">Strands Agents SDK · Good Neighbor track · Agents for Humans</text>
+  <text x="40" y="48" font-family="Georgia, serif" font-size="28" fill="#241c16">StillOn - Harbor Light night desk</text>
+  <text x="40" y="76" font-family="Georgia, serif" font-size="14" fill="#6d6258">Strands Agents SDK - Good Neighbor track - Agents for Humans</text>
 
   <rect x="40" y="110" width="280" height="390" rx="18" fill="#fffdf8" stroke="#d9cfc0"/>
   <text x="60" y="142" font-family="Georgia, serif" font-size="16" fill="#241c16">1. Python owns facts</text>
@@ -27,12 +28,12 @@
   <rect x="660" y="110" width="280" height="390" rx="18" fill="#fffdf8" stroke="#d9cfc0"/>
   <text x="680" y="142" font-family="Georgia, serif" font-size="16" fill="#241c16">3. Human only for judgment</text>
   <text x="680" y="172" font-family="Georgia, serif" font-size="13" fill="#6d6258">Morning board</text>
-  <text x="680" y="196" font-family="Georgia, serif" font-size="13" fill="#9c2b1e">Needs you — 2 or 3 choices</text>
-  <text x="680" y="220" font-family="Georgia, serif" font-size="13" fill="#2f5d45">Ready — silent PDFs</text>
+  <text x="680" y="196" font-family="Georgia, serif" font-size="13" fill="#9c2b1e">Needs you - 2 or 3 choices</text>
+  <text x="680" y="220" font-family="Georgia, serif" font-size="13" fill="#2f5d45">Ready - silent PDFs</text>
   <text x="680" y="256" font-family="Georgia, serif" font-size="13" fill="#6d6258">Caseworker picks</text>
   <text x="680" y="280" font-family="Georgia, serif" font-size="13" fill="#6d6258">Same Strands session resumes</text>
   <text x="680" y="316" font-family="Georgia, serif" font-size="13" fill="#6d6258">No prompt box</text>
   <text x="680" y="340" font-family="Georgia, serif" font-size="13" fill="#6d6258">No chatbot</text>
-  <text x="680" y="380" font-family="Georgia, serif" font-size="13" fill="#241c16">Food. Coverage. Heat.</text>
+  <text x="680" y="380" font-family="Georgia, serif" font-size="16" fill="#241c16">Food. Coverage. Heat.</text>
   <text x="680" y="404" font-family="Georgia, serif" font-size="13" fill="#6d6258">kept on by paperwork that actually went in</text>
 </svg>

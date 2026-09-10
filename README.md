@@ -41,13 +41,10 @@ The first run uses a local Strands model provider (`NightDeskModel`) so you can 
 
 ## Live demo
 
-The morning board is a FastAPI app. Public hosts should set `STILLON_USE_BEDROCK=0` so judges can click **Run last night** without a Bedrock key.
+**Try it:** [https://stillon-a5if.onrender.com](https://stillon-a5if.onrender.com)  
+Click **Run last night**, then answer one **Needs you** card. First load on the free host can take a minute.
 
-```bash
-stillon serve --host 0.0.0.0 --port 8000
-```
-
-`Dockerfile` and `render.yaml` in the repo root are for that board. AgentCore remains `deploy/agentcore_app.py`.
+The board is FastAPI. Public hosts should set `STILLON_USE_BEDROCK=0` so judges do not need a Bedrock key. AgentCore remains `deploy/agentcore_app.py`.
 
 ## Amazon Bedrock
 
@@ -69,7 +66,20 @@ Then `stillon night` again. Tools and interrupts do not change. Caseworker butto
 
 ## AgentCore
 
-`deploy/agentcore_app.py` wraps the same night desk with `BedrockAgentCoreApp`.
+`deploy/agentcore_app.py` wraps the same night desk with `BedrockAgentCoreApp`. The live Runtime is in Ohio (`us-east-2`):
+
+`arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK`
+
+IAM-signed invoke (no chatbot):
+
+```bash
+agentcore invoke --prompt board
+agentcore invoke --prompt night
+```
+
+Payloads are `{"action": "night"}`, `{"action": "board"}`, or `{"action": "decide", "household_id": "hh-santos", "choice": "accept_stale_paystub"}`. The model still cannot file.
+
+Local loop:
 
 ```bash
 pip install bedrock-agentcore
@@ -77,12 +87,7 @@ python deploy/agentcore_app.py
 # POST /invocations  {"action": "night"}
 ```
 
-Container build (linux/arm64) is in `deploy/Dockerfile`. After Bedrock works locally:
-
-```bash
-npm install -g @aws/agentcore
-agentcore deploy
-```
+Redeploy from a path with no spaces (Windows): `cd %USERPROFILE%\stillon` then `agentcore deploy -y`.
 
 ## Submit
 

@@ -29,7 +29,36 @@ def project_root() -> Path:
 ROOT = project_root()
 
 
+def runtime_root() -> Path:
+    """Writable tree for caseload, sessions, and PDFs.
+
+    AgentCore CodeZip mounts source at /var/task (read-only). Prefer
+    STILLON_RUNTIME_DIR, then ROOT if it is writable, else /tmp/stillon.
+    """
+    env = os.environ.get("STILLON_RUNTIME_DIR", "").strip()
+    candidates = [Path(env)] if env else []
+    candidates.extend([ROOT, Path("/tmp/stillon")])
+    for cand in candidates:
+        try:
+            cand.mkdir(parents=True, exist_ok=True)
+            probe = cand / ".stillon-write"
+            probe.write_text("ok", encoding="utf-8")
+            probe.unlink()
+            return cand
+        except OSError:
+            continue
+    return Path("/tmp/stillon")
+
+
+RUNTIME = runtime_root()
+
+
 def load_env() -> None:
+    # AgentCore CodeZip may still ship a local .env. Never load a playground
+    # bearer token there — the execution role calls Bedrock.
+    if os.environ.get("STILLON_RUNTIME_DIR", "").strip():
+        os.environ.pop("AWS_BEARER_TOKEN_BEDROCK", None)
+        return
     path = ROOT / ".env"
     if not path.exists():
         return

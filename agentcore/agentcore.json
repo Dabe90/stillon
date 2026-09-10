@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "StillOn",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "agentcore:created-by": "agentcore-cli",
+    "agentcore:project-name": "StillOn"
+  },
+  "runtimes": [
+    {
+      "name": "StillOn",
+      "description": "Harbor Light overnight benefits desk",
+      "build": "CodeZip",
+      "entrypoint": "deploy/agentcore_app.py",
+      "codeLocation": ".",
+      "runtimeVersion": "PYTHON_3_13",
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP",
+      "authorizerType": "AWS_IAM",
+      "additionalPolicies": [
+        "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
+      ],
+      "lifecycleConfiguration": {
+        "idleRuntimeSessionTimeout": 1800,
+        "maxLifetime": 7200
+      },
+      "envVars": [
+        { "name": "STILLON_USE_BEDROCK", "value": "1" },
+        { "name": "STILLON_DESK_DATE", "value": "2026-09-09" },
+        { "name": "STILLON_MODEL_ID", "value": "amazon.nova-lite-v1:0" },
+        { "name": "AWS_REGION", "value": "us-east-2" },
+        { "name": "PYTHONUNBUFFERED", "value": "1" },
+        { "name": "STILLON_RUNTIME_DIR", "value": "/tmp/stillon" }
+      ]
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [],
+  "policyEngines": [],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "payments": []
+}

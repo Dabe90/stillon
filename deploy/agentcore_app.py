@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+import os
+
+# Runtime filesystem is read-only at /var/task. Caseload writes go to /tmp.
+# Drop any playground Bedrock key that snuck in via a packaged .env.
+os.environ.setdefault("STILLON_RUNTIME_DIR", "/tmp/stillon")
+os.environ.pop("AWS_BEARER_TOKEN_BEDROCK", None)
+
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 
 from stillon.night_desk import board, resume_decision, run_night

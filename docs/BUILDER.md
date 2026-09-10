@@ -22,7 +22,7 @@ I signed up through Blank Slate. The project region is Ohio (`us-east-2`), not N
 
 Deadlines and paystub freshness are Python. The Strands agent only decides which tool to call. `escalate_decision` and `submit_packet` are gated with `BeforeToolCallEvent.interrupt`. On resume, the same file session continues. That is the product, not a wrapper around a chat completion.
 
-`deploy/agentcore_app.py` wraps the same `run_night` / `board` / `decide` loop with `BedrockAgentCoreApp`, so the AgentCore Runtime path is the night desk, not a second agent.
+`deploy/agentcore_app.py` wraps the same `run_night` / `board` / `decide` loop with `BedrockAgentCoreApp`. The Runtime is live in Ohio: `arn:aws:bedrock-agentcore:us-east-2:750390206396:runtime/StillOn_StillOn-C6Gf1qBQlK`. That path is the night desk, not a second agent.
 
 ## What broke, and what I kept deterministic
 
