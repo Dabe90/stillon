@@ -2,21 +2,46 @@
 
 from __future__ import annotations
 
+import base64
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from stillon.config import ROOT, load_env
 from stillon.night_desk import attach_proof, board, resume_decision, run_night
 from stillon.runtime import invoke, remote_enabled
-from stillon.store import STORE
+from stillon.store import PACKETS_DIR, STORE
 
 load_env()
 
 WEB = ROOT / "web" / "static"
 
 app = FastAPI(title="StillOn", version="0.1.0")
+
+
+@app.get("/static/packets/{name}")
+def packet_pdf(name: str) -> Response:
+    safe = Path(name).name
+    if safe != name or not safe.endswith(".pdf"):
+        raise HTTPException(status_code=404, detail="missing packet")
+    if remote_enabled():
+        try:
+            data = _unwrap(invoke({"action": "packet", "name": safe}))
+            raw = base64.b64decode(data.get("pdf_b64") or "")
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=f"packet fetch failed: {exc}") from exc
+        if not raw:
+            raise HTTPException(status_code=404, detail="missing packet")
+        return Response(content=raw, media_type="application/pdf")
+    path = PACKETS_DIR / safe
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="missing packet")
+    return FileResponse(path)
+
+
 app.mount("/static", StaticFiles(directory=str(WEB)), name="static")
 
 

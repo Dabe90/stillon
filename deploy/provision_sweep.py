@@ -146,17 +146,21 @@ def _url(lam) -> str:
                 "MaxAge": 86400,
             },
         )
-        try:
-            lam.add_permission(
-                FunctionName=FUNCTION,
-                StatementId="FunctionURLAllowPublic",
-                Action="lambda:InvokeFunctionUrl",
-                Principal="*",
-                FunctionUrlAuthType="NONE",
-            )
-        except ClientError as exc:
-            if exc.response["Error"]["Code"] != "ResourceConflictException":
-                raise
+        for sid, action, extra in (
+            ("FunctionURLAllowPublic", "lambda:InvokeFunctionUrl", {"FunctionUrlAuthType": "NONE"}),
+            ("FunctionURLAllowInvokeFunction", "lambda:InvokeFunction", {}),
+        ):
+            try:
+                lam.add_permission(
+                    FunctionName=FUNCTION,
+                    StatementId=sid,
+                    Action=action,
+                    Principal="*",
+                    **extra,
+                )
+            except ClientError as exc:
+                if exc.response["Error"]["Code"] != "ResourceConflictException":
+                    raise
         return created["FunctionUrl"]
 
 

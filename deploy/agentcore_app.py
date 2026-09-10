@@ -33,6 +33,17 @@ def invoke(payload: dict):
     if action == "reset":
         STORE.reset()
         return {"ok": True, "board": board()}
+    if action == "packet":
+        import base64
+        from pathlib import Path
+
+        from stillon.store import PACKETS_DIR
+
+        name = Path((payload or {}).get("name") or "").name
+        path = PACKETS_DIR / name
+        if not name.endswith(".pdf") or not path.exists():
+            return {"ok": False, "error": "missing packet"}
+        return {"ok": True, "name": name, "pdf_b64": base64.b64encode(path.read_bytes()).decode("ascii")}
     if action == "decide":
         outcome = resume_decision(
             payload["household_id"],
